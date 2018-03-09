@@ -41,12 +41,10 @@
 }
 
 .hackbnb-booking {
-  position: relative;
-  top: 75px;
+  margin-top: 75px;
   margin-left: 45px;
   width: 376px;
   z-index: 3;
-  border: 2px solid black;
 }
 
 .hackbnb-separator {
