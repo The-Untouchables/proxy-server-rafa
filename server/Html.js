@@ -1,3 +1,11 @@
+/**
+ * Html
+ * This Html.js file acts as a template that we insert all our generated
+ * application strings into before sending it to the client.
+ */
+const env = require('./environment.js');
+
+module.exports.render = body => `
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -19,7 +27,7 @@
     </div>
     <section>
       <div class="hackbnb-page">
-        <div id="description-service"></div>
+        <div id="description-service">${body}</div>
         <div class="hackbnb-booking-box">
           <div class="hackbnb-booking">
             <div id="bookings-service">
@@ -40,11 +48,12 @@
     <section>
       <div id="app-recommendations"></div>
     </section>
-    <script src="http://18.222.4.195:3001/photo-carousel.bundle.js"></script>
-    <script src="http://18.222.4.195:3002/app-description.bundle.js"></script>
-    <script src="http://18.222.7.43/app-description.bundle.js"></script>
-    <script src="http://18.188.46.228/bundle.js"></script>
-    <script src="http://18.219.35.229/bundle.js"></script>
+    <script src="http://${env.photoHost}:${env.photoPort}/photo-carousel.bundle.js"></script>
+    <script src="http://${env.descHost}:${env.descPort}/app-description.bundle.js"></script>
+    <script src="http://${env.bookingsHost}:${env.bookignsPort}/bundle.js"></script>
+    <script src="http://${env.reviewsHost}:${env.reviewsPort}/bundle.js"></script>
+    <script src="http://${env.neighborhoodHost}:${env.neighborhoodPort}/bundle.js"></script>
     </body>
 
 </html>
+`;
