@@ -3,7 +3,7 @@ const path = require('path');
 const router = express.Router();
 
 let descHost = process.env.DESCRIPTION_SERVICE_HOST || 'localhost';
-let descPort = process.env.DESCRIPTION_SERVICE_PORT || '3000';
+let descPort = process.env.DESCRIPTION_SERVICE_PORT || '3002';
 
 let photoHost = process.env.CAROUSEL_SERVICE_HOST || 'localhost';
 let photoPort = process.env.CAROUSEL_SERVICE_PORT || '3001';
