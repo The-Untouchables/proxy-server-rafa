@@ -1,41 +1,74 @@
 const express = require('express');
 const path = require('path');
+const axios = require('axios');
+const Html = require('./Html.js');
+const env = require('./environment.js');
 const router = express.Router();
 
-let descHost = process.env.DESCRIPTION_SERVICE_HOST || 'localhost';
-let descPort = process.env.DESCRIPTION_SERVICE_PORT || '3002';
-
-let photoHost = process.env.CAROUSEL_SERVICE_HOST || 'localhost';
-let photoPort = process.env.CAROUSEL_SERVICE_PORT || '3001';
-
-let reviewsHost = process.env.REVIEWS_SERVICE_HOST || 'localhost';
-let reviewsPort = process.env.REVIEWS_SERVICE_PORT || '3004';
-
-let neighborhoodHost = process.env.NEIGHBORHOOD_SERVICE_HOST || 'localhost';
-let neighborhoodPort = process.env.NEIGHBORHOOD_SERVICE_PORT || '3006';
-
-router.route('/:roomid')
-  .get((req, res, next) => res.sendFile('index.html', {root: path.resolve('public')}))
+router
+  .route('/:roomid')
+  .get((req, res, next) => {
+    axios
+      .get(`http://${env.descHost}:${env.descPort}/api/rooms/${req.params.roomid}/description/ssr`)
+      .then(html => {
+        res.send(Html.render(html.data));
+      })
+      .catch(err => {
+        console.log('Error retrieving the room data SSR rendered', err);
+      });
+  })
   .options((req, res) => {
     res.sendStatus(200);
   });
 
-router.route('/:roomid/reviews')
-  .get((req, res, next) => res.redirect(`http://${reviewsHost}:${reviewsPort}/rooms/${req.params.roomid}/reviews`));
+router
+  .route('/:roomid/reviews')
+  .get((req, res, next) =>
+    res.redirect(`http://${env.reviewsHost}:${env.reviewsPort}/rooms/${req.params.roomid}/reviews`)
+  );
 
-router.route('/:roomid/ratings')
-  .get((req, res, next) => res.redirect(`http://${reviewsHost}:${reviewsPort}/rooms/${req.params.roomid}/ratings`));
+router
+  .route('/:roomid/ratings')
+  .get((req, res, next) =>
+    res.redirect(`http://${env.reviewsHost}:${env.reviewsPort}/rooms/${req.params.roomid}/ratings`)
+  );
 
-router.route('/:roomid/description')
-  .get((req, res, next) => res.redirect(`http://${descHost}:${descPort}/rooms/${req.params.roomid}/description`));
+router
+  .route('/:roomid/carousel')
+  .get((req, res, next) =>
+    res.redirect(`http://${env.photoHost}:${env.photoPort}/rooms/${req.params.roomid}/carousel`)
+  );
 
-router.route('/:roomid/carousel')
-  .get((req, res, next) => res.redirect(`http://${photoHost}:${photoPort}/rooms/${req.params.roomid}/carousel`));
+router
+  .route('/:roomid/bookings')
+  .get((req, res, next) =>
+    res.redirect(`http://${env.bookingsHost}:${env.bookingsPort}/rooms/${req.params.roomid}/bookings`)
+  );
 
-router.route('/:roomid/bookings')
-  .get((req, res, next) => res.redirect(`http://localhost:3003/rooms/${req.params.roomid}/bookings`));
+router
+  .route('/:roomid/neighborhood')
+  .get((req, res, next) =>
+    res.redirect(`http:/${env.neighborhoodHost}:${env.neighborhoodPort}/rooms/${req.params.roomid}/neighborhood`)
+  );
 
-router.route('/:roomid/neighborhood')
-  .get((req, res, next) => res.redirect(`http:/${neighborhoodHost}:${neighborhoodPort}/rooms/${req.params.roomid}/neighborhood`));
+router
+  .route('/:roomid/similarlistings')
+  .get((req, res, next) =>
+    res.redirect(`http:/${env.listingsHost}:${env.listingsPort}/rooms/${req.params.roomid}/similarlistings`)
+  );
+
+router.route('/images/:imageId').get((req, res, next) =>
+  res.redirect(`http:/${env.listingsHost}:${env.listingsPort}/rooms/images/${imageId}`)
+);
+
+router.route('/:roomid/description').get((req, res, next) => {
+  axios.get(`http://${descHost}:${descPort}/api/rooms/${req.params.roomid}/description/ssr`)
+    .then(html => {
+      res.send(Html.render(html.data));
+    })
+    .catch(err => {
+      console.log('Error retrieving SSR room data', err);
+    });
+});
 
 module.exports = router;
