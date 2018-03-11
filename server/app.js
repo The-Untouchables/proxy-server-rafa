@@ -5,6 +5,7 @@ const roomsRouter = require('./rooms-router.js');
 const apiRouter = require('./api-router.js');
 const morgan = require('morgan');
 
+
 const app = express();
 
 app.use(morgan('dev'));
@@ -17,10 +18,9 @@ app.use((req, res, next) => {
   res.header('Access-Control-Max-Age', 10); // Seconds.
   next();
 });
+app.use(express.static(path.resolve('public')));
 app.use('/rooms', roomsRouter);
 app.use('/api/rooms', apiRouter);
-
-app.use(express.static(path.resolve('public')));
 
 app.get('/', (req, res, next) => res.sendFile('index.html', {root: path.resolve('public')}));
 

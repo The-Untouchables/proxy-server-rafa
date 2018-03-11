@@ -42,7 +42,7 @@ router
 router
   .route('/:roomid/bookings')
   .get((req, res, next) =>
-    res.redirect(`http://${env.bookingsHost}:${env.bookignsPort}/rooms/${req.params.roomid}/bookings`)
+    res.redirect(`http://${env.bookingsHost}:${env.bookingsPort}/rooms/${req.params.roomid}/bookings`)
   );
 
 router
@@ -50,6 +50,16 @@ router
   .get((req, res, next) =>
     res.redirect(`http:/${env.neighborhoodHost}:${env.neighborhoodPort}/rooms/${req.params.roomid}/neighborhood`)
   );
+
+router
+  .route('/:roomid/similarlistings')
+  .get((req, res, next) =>
+    res.redirect(`http:/${env.listingsHost}:${env.listingsPort}/rooms/${req.params.roomid}/similarlistings`)
+  );
+
+router.route('/images/:imageId').get((req, res, next) =>
+  res.redirect(`http:/${env.listingsHost}:${env.listingsPort}/rooms/images/${imageId}`)
+);
 
 router.route('/:roomid/description').get((req, res, next) => {
   axios.get(`http://${descHost}:${descPort}/api/rooms/${req.params.roomid}/description/ssr`)
